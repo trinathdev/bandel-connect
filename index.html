@@ -7,14 +7,15 @@
 <title>Bandel Connect</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#fff;color:#174d32}
+body{margin:0;font-family:Arial,sans-serif;background:white;color:#174d32}
 header{background:#14532d;color:white;padding:22px 15px;text-align:center}
 header h1{margin:0;font-size:25px}
 header p{margin:8px 0 0}
 .welcome{text-align:center;padding:25px 12px}
-.welcome h2{margin:0 0 8px}
+.actions{display:flex;justify-content:center;gap:12px;padding:5px 15px 20px}
+.actions a{background:#198754;color:white;text-decoration:none;padding:13px 22px;border-radius:8px;font-weight:bold}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;padding:12px}
-.item{border:1px solid #b7dfc5;border-radius:12px;padding:22px 8px;text-align:center;color:#14532d;background:#fff;font-size:17px;font-weight:bold}
+.item{border:1px solid #b7dfc5;border-radius:12px;padding:22px 8px;text-align:center;font-size:17px;font-weight:bold}
 .item span{display:block;font-size:30px;margin-bottom:10px}
 footer{text-align:center;padding:22px;color:#47745a;font-size:13px}
 </style>
@@ -28,6 +29,9 @@ footer{text-align:center;padding:22px;color:#47745a;font-size:13px}
 <h2>Welcome to Bandel</h2>
 <p>Connect with your village and your people.</p>
 </section>
+<div class="actions">
+<a href="register.html">Register</a>
+</div>
 <main class="grid">
 <div class="item"><span>📰</span>News</div>
 <div class="item"><span>📸</span>Photos</div>

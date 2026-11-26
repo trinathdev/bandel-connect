@@ -1,0 +1,59 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bandel Connect - Registration</title>
+<style>
+body{font-family:Arial;background:#fff;color:#14532d;margin:0;padding:20px}
+header{background:#14532d;color:white;text-align:center;padding:20px;border-radius:12px}
+form{max-width:450px;margin:25px auto}
+label{display:block;margin-top:15px;font-weight:bold}
+input,select{width:100%;padding:13px;margin-top:7px;border:1px solid #b7dfc5;border-radius:8px;box-sizing:border-box;font-size:16px}
+button{width:100%;padding:14px;margin-top:20px;background:#198754;color:white;border:0;border-radius:8px;font-size:17px}
+.note{background:#e9f7ee;padding:12px;border-radius:8px;margin-top:15px}
+</style>
+</head>
+<body>
+<header>
+<h2>🌿 BANDEL CONNECT</h2>
+<p>Join Your Village Community</p>
+</header>
+<form id="registerForm">
+<h2>Create Account</h2>
+
+<label>Full Name</label>
+<input type="text" required placeholder="Enter your full name">
+
+<label>Mobile Number</label>
+<input type="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="10 digit mobile number">
+
+<label>Village</label>
+<input type="text" value="Bandel" readonly>
+
+<label>Language</label>
+<select required>
+<option value="">Choose Language</option>
+<option>English</option>
+<option>Odia</option>
+</select>
+
+<label>Profile Photo (Required)</label>
+<input type="file" accept="image/*" required>
+
+<div class="note">
+Your registration request will be sent for Bandel resident verification and Admin approval.
+</div>
+
+<button type="submit">Submit Registration</button>
+</form>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit",function(e){
+e.preventDefault();
+alert("Demo only: Registration form checked. Real OTP and Admin approval system will be connected later.");
+});
+</script>
+</body>
+</html>

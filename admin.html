@@ -1,0 +1,103 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bandel Connect - Admin Dashboard</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5faf6;color:#14532d}
+header{background:#14532d;color:white;padding:20px;text-align:center}
+header h2{margin:0}
+.container{padding:16px;max-width:700px;margin:auto}
+.login-box,.panel{background:white;padding:20px;border:1px solid #b7dfc5;border-radius:12px;margin:18px 0}
+label{display:block;margin-top:12px;font-weight:bold}
+input{width:100%;padding:12px;margin-top:7px;border:1px solid #b7dfc5;border-radius:7px}
+button{padding:12px;background:#198754;color:white;border:0;border-radius:7px;margin:7px 5px 0 0;font-size:15px}
+.reject{background:#b42318}
+.logout{background:#555}
+.card{border:1px solid #b7dfc5;border-radius:9px;padding:14px;margin-top:12px}
+.hidden{display:none}
+.notice{background:#e9f7ee;padding:12px;border-radius:8px;font-size:14px}
+</style>
+</head>
+<body>
+<header>
+<h2>🛡️ BANDEL CONNECT</h2>
+<p>Admin Dashboard</p>
+</header>
+
+<div class="container">
+
+<div class="login-box" id="loginBox">
+<h3>Admin Login</h3>
+<label>Admin Password</label>
+<input type="password" id="adminPassword" placeholder="Enter demo password">
+<button onclick="adminLogin()">Login</button>
+<p id="loginMessage"></p>
+</div>
+
+<div id="dashboard" class="hidden">
+<h2>Welcome, Main Admin 👑</h2>
+<button class="logout" onclick="logout()">Logout</button>
+
+<div class="notice">
+This is a front-end demo dashboard. User records and approvals are not connected to a database.
+</div>
+
+<div class="panel">
+<h3>👥 User Management</h3>
+<p>Pending user requests</p>
+<div id="users">
+<p>No real user requests connected yet.</p>
+</div>
+</div>
+
+<div class="panel">
+<h3>📰 Post Management</h3>
+<p>News, photos and videos approval</p>
+<div id="posts">
+<p>No real posts connected yet.</p>
+</div>
+</div>
+
+<div class="panel">
+<h3>👨‍💼 Sub Admin Management</h3>
+<p>Main Admin can manage two Sub Admin accounts.</p>
+<div class="card">
+<strong>Sub Admin 1</strong>
+<p>Not connected</p>
+</div>
+<div class="card">
+<strong>Sub Admin 2</strong>
+<p>Not connected</p>
+</div>
+</div>
+
+<div class="panel">
+<h3>⚙️ Admin Settings</h3>
+<p>Main Admin has full control over the website.</p>
+</div>
+
+</div>
+</div>
+
+<script>
+function adminLogin(){
+const password=document.getElementById("adminPassword").value;
+if(password==="BandelDemo2026"){
+document.getElementById("loginBox").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+}else{
+document.getElementById("loginMessage").textContent="Incorrect demo password.";
+}
+}
+function logout(){
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("loginBox").classList.remove("hidden");
+document.getElementById("adminPassword").value="";
+}
+</script>
+</body>
+</html>

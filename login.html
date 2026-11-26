@@ -1,0 +1,44 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bandel Connect - Login</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:Arial;background:white;color:#14532d;margin:0;padding:20px}
+header{background:#14532d;color:white;text-align:center;padding:20px;border-radius:12px}
+form{max-width:420px;margin:30px auto}
+label{display:block;margin-top:18px;font-weight:bold}
+input{width:100%;padding:14px;margin-top:8px;border:1px solid #b7dfc5;border-radius:8px;font-size:16px}
+button{width:100%;padding:14px;margin-top:22px;background:#198754;color:white;border:0;border-radius:8px;font-size:17px}
+a{color:#198754}
+.note{background:#e9f7ee;padding:12px;border-radius:8px;margin-top:18px}
+</style>
+</head>
+<body>
+<header>
+<h2>🌿 BANDEL CONNECT</h2>
+<p>Welcome Back!</p>
+</header>
+<form id="loginForm">
+<h2>Login</h2>
+<label>Mobile Number</label>
+<input type="tel" required pattern="[0-9]{10}" maxlength="10" placeholder="Enter mobile number">
+<label>Password</label>
+<input type="password" required placeholder="Enter password">
+<button type="submit">Login</button>
+<div class="note">
+New to Bandel Connect?
+<a href="register.html">Create Account</a>
+</div>
+</form>
+<script>
+document.getElementById("loginForm").addEventListener("submit",function(e){
+e.preventDefault();
+alert("Demo only: Real login and account verification will be connected later.");
+});
+</script>
+</body>
+</html>

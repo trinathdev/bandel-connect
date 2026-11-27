@@ -4,43 +4,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bandel Connect - Register</title>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
+<title>Bandel Connect - Registration</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-body{font-family:Arial;background:#f5faf5;color:#174d2b;margin:0;padding:20px}
-.container{max-width:430px;margin:25px auto;background:white;padding:22px;border-radius:14px;box-shadow:0 2px 12px #0001}
-h2{text-align:center;color:#176b35}
-input,select,button{width:100%;box-sizing:border-box;padding:13px;margin:9px 0;border:1px solid #b7d8bd;border-radius:8px;font-size:16px}
-button{background:#176b35;color:white;border:0;font-weight:bold}
+*{box-sizing:border-box}
+body{font-family:Arial,sans-serif;background:white;color:#14532d;margin:0;padding:20px}
+.container{max-width:430px;margin:25px auto;padding:22px;border:1px solid #b7dfc5;border-radius:14px}
+header{text-align:center;background:#14532d;color:white;padding:15px;border-radius:10px}
+input,select,button{width:100%;padding:14px;margin:9px 0;border:1px solid #b7dfc5;border-radius:8px;font-size:16px}
+button{background:#198754;color:white;border:0;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
-.note{font-size:13px;color:#555}
-#status{font-weight:bold;color:#176b35;overflow-wrap:anywhere}
+label{font-weight:bold}
+#status{font-weight:bold;overflow-wrap:anywhere}
+.note{background:#e9f7ee;padding:12px;border-radius:8px;line-height:1.5}
 </style>
 </head>
-
 <body>
-<div class="container">
 
+<div class="container">
+<header>
 <h2>🌿 BANDEL CONNECT</h2>
-<p style="text-align:center">Create Your Account</p>
+<p>Apna gaon, apne log, apni community.</p>
+</header>
+
+<h2>Create Account</h2>
 
 <form id="registerForm">
-
 <label>Full Name</label>
-<input id="fullName" type="text" placeholder="Enter your full name" required>
+<input id="fullName" type="text" required placeholder="Enter your full name">
 
-<label>Mobile Number (with country code)</label>
-<input id="phone" type="tel" placeholder="+16505553434" required>
+<label>Email Address</label>
+<input id="email" type="email" required placeholder="Enter your email">
 
-<div id="recaptcha-container"></div>
-
-<button type="button" id="sendOtp">Send OTP</button>
+<button type="button" id="sendOtp">Send Email OTP</button>
 
 <label>Enter 6-Digit OTP</label>
-<input id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="Enter OTP" required>
+<input id="otp" type="text" inputmode="numeric" maxlength="6" placeholder="Enter OTP">
 
 <button type="button" id="verifyOtp">Verify OTP</button>
 
@@ -48,126 +47,158 @@ button:disabled{opacity:.5}
 <input type="text" value="Bandel" readonly>
 
 <label>Choose Language</label>
-<select id="language" required>
-<option value="English">English</option>
-<option value="Odia">Odia</option>
+<select id="language">
+<option value="en">English</option>
+<option value="or">Odia</option>
 </select>
 
-<label>Profile Photo</label>
-<input id="photo" type="file" accept="image/*" required>
-
-<button type="submit" id="submitBtn" disabled>Submit Registration</button>
-
+<button type="submit" id="submitBtn" disabled>
+Complete Registration
+</button>
 </form>
 
 <p id="status"></p>
 
-<p class="note">Your account requires Bandel resident verification and Admin approval.</p>
+<div class="note">
+Your account will remain pending until an Admin verifies that you are a resident of Bandel village.
+</div>
 
+<p>Already registered? <a href="login.html">Login here</a></p>
 </div>
 
 <script>
-const firebaseConfig = {
-  apiKey: "AIzaSyC9BELPXhDEwc29aQHC-IqJ2hoB81XedWQ",
-  authDomain: "bandel-connect.firebaseapp.com",
-  projectId: "bandel-connect",
-  storageBucket: "bandel-connect.firebasestorage.app",
-  messagingSenderId: "915757312998",
-  appId: "1:915757312998:web:dc01a02905e22848f18427"
-};
+const SUPABASE_URL = "https://khehpylzvawykhqypuhe.supabase.co";
+const SUPABASE_KEY = "sb_publishable_4wYsvToMqPcuU9kEOqI23Q_06yUCIf0";
 
-firebase.initializeApp(firebaseConfig);
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const auth = firebase.auth();
-
-let confirmationResult = null;
-let phoneVerified = false;
-let recaptchaVerifier = null;
+let verifiedUser = null;
 
 const statusBox = document.getElementById("status");
+const sendButton = document.getElementById("sendOtp");
+const verifyButton = document.getElementById("verifyOtp");
+const submitButton = document.getElementById("submitBtn");
 
-function showStatus(message) {
-  statusBox.textContent = message;
+function message(text) {
+  statusBox.textContent = text;
 }
 
-async function setupRecaptcha() {
-  if (!recaptchaVerifier) {
-    recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
-      "recaptcha-container",
-      { size: "normal" }
-    );
-  }
-  await recaptchaVerifier.render();
-}
+sendButton.addEventListener("click", async () => {
+  const fullName = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-document.getElementById("sendOtp").addEventListener("click", async () => {
-  const phone = document.getElementById("phone").value.trim();
-
-  if (!phone.startsWith("+")) {
-    showStatus("Country code ke saath number likhein.");
+  if (!fullName || !email) {
+    message("Please enter your name and email.");
     return;
   }
 
   try {
-    showStatus("Please wait...");
-    await setupRecaptcha();
+    sendButton.disabled = true;
+    message("Sending OTP...");
 
-    confirmationResult = await auth.signInWithPhoneNumber(
-      phone,
-      recaptchaVerifier
-    );
+    const { error } = await db.auth.signInWithOtp({
+      email: email,
+      options: {
+        data: {
+          full_name: fullName,
+          village: "Bandel",
+          language: document.getElementById("language").value
+        }
+      }
+    });
 
-    showStatus("OTP request successful. Enter your test code.");
+    if (error) throw error;
+
+    message("OTP sent! Please check your email inbox.");
   } catch (error) {
-    showStatus("Error: " + error.message);
+    message("Error: " + error.message);
+  } finally {
+    sendButton.disabled = false;
+  }
+});
 
-    if (recaptchaVerifier) {
-      recaptchaVerifier.clear();
-      recaptchaVerifier = null;
+verifyButton.addEventListener("click", async () => {
+  const email = document.getElementById("email").value.trim();
+  const token = document.getElementById("otp").value.trim();
+
+  if (!email || token.length !== 6) {
+    message("Enter your email and 6-digit OTP.");
+    return;
+  }
+
+  try {
+    verifyButton.disabled = true;
+    message("Verifying OTP...");
+
+    const { data, error } = await db.auth.verifyOtp({
+      email: email,
+      token: token,
+      type: "email"
+    });
+
+    if (error) throw error;
+
+    verifiedUser = data.user;
+
+    if (!verifiedUser) {
+      throw new Error("User verification failed.");
     }
-  }
-});
 
-document.getElementById("verifyOtp").addEventListener("click", async () => {
-  const code = document.getElementById("otp").value.trim();
+    const { data: profile, error: profileError } = await db
+      .from("profiles")
+      .select("account_status, role")
+      .eq("id", verifiedUser.id)
+      .maybeSingle();
 
-  if (!confirmationResult) {
-    showStatus("Pehle Send OTP dabayein.");
-    return;
-  }
+    if (profileError) throw profileError;
 
-  if (code.length !== 6) {
-    showStatus("6-digit code enter karein.");
-    return;
-  }
+    if (!profile) {
+      throw new Error("Profile not found. Please contact Admin.");
+    }
 
-  try {
-    await confirmationResult.confirm(code);
+    document.getElementById("email").readOnly = true;
+    submitButton.disabled = false;
 
-    phoneVerified = true;
-    document.getElementById("phone").readOnly = true;
-    document.getElementById("submitBtn").disabled = false;
+    message("Email verified! Your profile is ready. Complete registration below.");
 
-    showStatus("Phone number verified successfully!");
   } catch (error) {
-    showStatus("Verification failed: " + error.message);
+    message("Verification error: " + error.message);
+  } finally {
+    verifyButton.disabled = false;
   }
 });
 
-document.getElementById("registerForm").addEventListener("submit", (event) => {
+document.getElementById("registerForm").addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  if (!phoneVerified) {
-    showStatus("Pehle phone number verify karein.");
+  if (!verifiedUser) {
+    message("Please verify your email first.");
     return;
   }
 
-  if (!document.getElementById("photo").files.length) {
-    showStatus("Profile photo select karein.");
-    return;
-  }
+  try {
+    submitButton.disabled = true;
 
-  showStatus("Phone verified! Profile database aur Admin approval abhi connect nahi hue hain.");
+    const { data: profile, error } = await db
+      .from("profiles")
+      .select("account_status")
+      .eq("id", verifiedUser.id)
+      .single();
+
+    if (error) throw error;
+
+    if (profile.account_status === "approved") {
+      message("Your account is already approved. Please login.");
+    } else if (profile.account_status === "pending") {
+      message("Registration successful! Your account is waiting for Admin approval.");
+    } else {
+      message("Your account was not approved. Please contact Admin.");
+    }
+
+  } catch (error) {
+    message("Error: " + error.message);
+    submitButton.disabled = false;
+  }
 });
 </script>
 
